@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <meta content="initial-scale=1.0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+
+    <title>{{app_title}} - {%if mail_mode == 'activation'%}Activation{% else %}Reset Password{% endif %}</title>
+    <style type="text/css">
+        .ReadMsgBody {
+            width: 100%;
+            background-color: #ebebeb;
+        }
+
+        .ExternalClass {
+            width: 100%;
+            background-color: #ebebeb;
+        }
+
+        .ExternalClass,
+        .ExternalClass p,
+        .ExternalClass span,
+        .ExternalClass font,
+        .ExternalClass td,
+        .ExternalClass div {
+            line-height: 100%;
+        }
+
+        body {
+            -webkit-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            border-spacing: 0;
+        }
+
+        table td {
+            border-collapse: collapse;
+        }
+
+        .yshortcuts a {
+            border-bottom: none !important;
+        }
+
+        @media screen and (max-width: 600px) {
+            table[class="container"] {
+                width: 95% !important;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            td[class="container-padding"] {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+        }
+    </style>
+</head>
+
+<body marginwidth="0" marginheight="0" bgcolor="#ebebeb" topmargin="0" leftmargin="0" style="margin:0; padding:10px 0;">
+    <br>
+    <table width="100%" height="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ebebeb">
+        <tbody>
+            <tr>
+                <td valign="top" bgcolor="#ebebeb" align="center" style="background-color: #ebebeb;">
+                    <table width="600" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" class="container">
+                        <tbody>
+                            <tr>
+                                <td bgcolor="#507AA4" align="left" id="header" class="w640">
+                                    <div align="left" style="text-align: left">
+                                        <a href="{{main_link}}"><img border="0" align="top" id="Logo" label="Logo"
+                                                editable="true" src="" width="120" height="30"
+                                                style="display: inline"></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td bgcolor="#ffffff" class="container-padding"
+                                    style="background-color: #ffffff; padding-left: 30px; padding-right: 30px; font-size: 14px; line-height: 20px; font-family: Helvetica, sans-serif; color: #333;">
+                                    <br>
+                                    {% if mail_mode == 'activation' %}
+                                    <div style="font-weight: bold; font-size: 18px; line-height: 24px; color: #507AA4">
+                                        Well, hi there!
+                                    </div>
+                                    <br>Thanks for signig up for {{app_title}} - click the link below to activate
+                                    <br>
+                                    <br>
+                                    <span style="font-family: Andale Mono, Courier, monospace; color: #666;"><a
+                                            href="{{activation_link}}" style="color:#2469A0;"
+                                            target="_blank">{{activation_link}}</a></span>
+                                    <br>
+                                    <br>
+                                    {% else %}
+                                    <div style="font-weight: bold; font-size: 18px; line-height: 24px; color: #507AA4">
+                                        It's okay, happens to the best of us
+                                    </div>
+                                    <br>Forgot your password? Fret not, we got you covered. Just click on the
+                                    scary-looking link below to set up your new password.
+                                    <br>
+                                    <br>
+                                    <span style="font-family: Andale Mono, Courier, monospace; color: #666;"><a
+                                            href="{{reset_link}}" style="color:#2469A0;"
+                                            target="_blank">{{reset_link}}</a></span>
+                                    <br>
+                                    <br>
+                                    <em>Remember</em>, this link is valid only for the next
+                                    <strong>{{validity_period}}</strong> hours!
+                                    <br>
+                                    <br>
+                                    <strong>Wait, I didn't want to reset my password! HELP!</strong>
+                                    <ul>
+                                        <li>
+                                            First up, if you don't want to, just ignore this email. Nothing changes.
+                                        </li>
+                                        <li>Second, just for your edification, we got this request from the IP address
+                                            <span
+                                                style="font-family: Andale Mono, Courier, monospace; color: #666;">{{ip_address}}</span>{% if shame_name %}
+                                            by the user <span
+                                                style="font-family: Andale Mono, Courier, monospace; color: #666;">{{shame_name}}</span>{% endif %}.
+                                        </li>
+                                    </ul>
+                                    {% endif %}
+                                    <br>
+                                    <div style="border-top: 1px solid #ddd;">
+                                        <br>Have questions? Check the <a href="{{faq_link}}"
+                                            style="color:#2469A0;">FAQ</a>.
+                                    </div>
+                                    <br>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <br>
+</body>
+
+</html>

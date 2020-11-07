@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <title>{{ APP_TITLE }} | Quiz Standings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <meta name="description" content="{{ APP_TITLE }} - Quiz Standings" />
+    <meta name="author" content="GP" />
+    <meta name="msapplication-tooltip" content="{{ APP_TITLE }} - The most amazeballs quizzing app ever!" />
+    <meta name="msapplication-starturl" content="{{ IE_START_URL }}" />
+    <meta name="msapplication-task"
+        content="name={{ APP_TITLE }}; action-uri={{ IE_START_URL}}; icon-uri={{ IE_FAVICON_URL }}" />
+    <meta name="msapplication-task" content="name=FAQ; action-uri={{ IE_FAQ_URL}}; icon-uri={{ IE_FAVICON_URL }}" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/jquery.gritter.min.css" />
+    <link rel="stylesheet" type="text/css" href="/font-awesome/css/font-awesome.min.css" />
+    <style type="text/css"></style>
+</head>
+
+<body style="">
+    <header class="navbar clearfix" id="header">
+        <div class="container">
+            <ul class="nav navbar-nav pull-right">
+                <!-- BEGIN USER LOGIN DROPDOWN -->
+                <li class="dropdown" id="header-user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="username"><i class="fa fa-user"></i>&nbsp;{{ USERNAME }}&nbsp;</span>
+                        <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ URL.QUIZ_STANDINGS }}"><i class="fa fa-sort-amount-desc"></i> Standings</a></li>
+                        <li><a href="{{ URL.FEEDBACK }}"><i class="fa fa-bullhorn"></i> Feedback</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{ URL.LOGOUT }}"><i class="fa fa-power-off"></i> Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <section id="page">
+        <div id="main-content">
+            <div class="container">
+                <div class="row">
+                    <div id="content" class="col-lg-12" style="min-height:1063px !important">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="page-header">
+                                    <ul class="breadcrumb">
+                                        <li>
+                                            <i class="fa fa-home"></i>
+                                        </li>
+                                        <li><a href="{{ URL.QUIZ_MAIN }}">Welcome</a></li>
+                                        <li>Standings</li>
+                                    </ul>
+                                    <div class="clearfix">
+                                        <h3 class="content-title pull-left">Quiz Standings &amp; Rankings</h3>
+                                    </div>
+                                    <div class="description">Stats <a href='#'
+                                            onclick='location.reload(true); return false;'><i
+                                                class="fa fa-refresh"></i></a> Refresh the page to update.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="dashbox panel panel-default">
+                                            <div class="panel-body">
+                                                <div class="panel-left green">
+                                                    <i class="fa fa-users fa-3x"></i>
+                                                </div>
+                                                <div class="panel-right">
+                                                    <div class="number" id="overall_rank">...</div>
+                                                    <div class="title">Your Overall Rank</div>
+                                                    <span class="label label-info">Out of {{ total_users_count }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <div class="dashbox panel panel-default">
+                                            <div class="panel-body">
+                                                <div class="panel-left red">
+                                                    <i class="fa fa-smile-o fa-3x"></i>
+                                                </div>
+                                                <div class="panel-right">
+                                                    <div class="number" id="daily_attendees">...</div>
+                                                    <div class="title">Attendees Today</div>
+                                                    <span class="label label-success tip"
+                                                        data-original-title="Percentage of attendees"
+                                                        id="attendee_percentage">...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <div class="dashbox panel panel-default">
+                                            <div class="panel-body">
+                                                <div class="panel-left red">
+                                                    <i class="fa fa-flag-checkered fa-3x"></i>
+                                                </div>
+                                                <div class="panel-right">
+                                                    <div class="number" id="daily_average">...</div>
+                                                    <div class="title">Average Score Today</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <div class="dashbox panel panel-default">
+                                            <div class="panel-body">
+                                                <div class="panel-left blue">
+                                                    <i class="fa fa-thumbs-o-up fa-3x"></i>
+                                                </div>
+                                                <div class="panel-right">
+                                                    <div class="number" id="daily_perfect_scores">...</div>
+                                                    <div class="title">Perfect Scores Today</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <div class="dashbox panel panel-default">
+                                            <div class="panel-body">
+                                                <div class="panel-left yellow">
+                                                    <i class="fa fa-clock-o fa-3x"></i>
+                                                </div>
+                                                <div class="panel-right">
+                                                    <div class="number" id="daily_quickest_quiz">...</div>
+                                                    <div class="title">Quickest Quiz Today</div>
+                                                    <span class="label label-success">seconds</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 box-container ui-sortable">
+                                <!-- BOX -->
+                                <div class="box border primary" id="box_top5">
+                                    <div class="box-title">
+                                        <h4><i class="fa fa-sort-amount-desc"></i><span class="hidden-inline-mobile">Top
+                                                5</span></h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="tabbable header-tabs">
+                                            <ul class="nav nav-tabs">
+                                                <li class=""><a data-toggle="tab" href="#box_tab3"><i
+                                                            class="fa fa-square"></i> <span
+                                                            class="hidden-inline-mobile">All Time</span></a></li>
+                                                <li class=""><a data-toggle="tab" href="#box_tab2"><i
+                                                            class="fa fa-th-large"></i> <span
+                                                            class="hidden-inline-mobile">Monthly</span></a></li>
+                                                <li class="active"><a data-toggle="tab" href="#box_tab1"><i
+                                                            class="fa fa-th"></i> <span
+                                                            class="hidden-inline-mobile">Weekly</span></a></li>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <div id="box_tab1" class="tab-pane active">
+                                                    <table class="table table-hover" style="margin-bottom: 0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Rank</th>
+                                                                <th>Username</th>
+                                                                <th>Points</th>
+                                                                <th>Avg Response Time</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbody_top5_weekly">
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div id="box_tab2" class="tab-pane">
+                                                    <table class="table table-hover" style="margin-bottom: 0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Rank</th>
+                                                                <th>Username</th>
+                                                                <th>Points</th>
+                                                                <th>Avg Response Time</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbody_top5_monthly">
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div id="box_tab3" class="tab-pane">
+                                                    <table class="table table-hover" style="margin-bottom: 0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Rank</th>
+                                                                <th>Username</th>
+                                                                <th>Points</th>
+                                                                <th>Avg Response Time</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbody_top5_alltime">
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 box-container ui-sortable">
+                                <div class="box border orange">
+                                    <div class="box-title">
+                                        <h4><i class="fa fa-bar-chart-o"></i><span class="hidden-inline-mobile">Today's
+                                                Question Highlights</span></h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <ul class="pricing_table row">
+                                            <li class="price_block col-md-6 col-xs-11">
+                                                <h3>Easiest</h3>
+                                                <div class="price orange">
+                                                    <div class="price_figure">
+                                                        <span class="price_number usercount_easiest">0</span>
+                                                        <span class="price_tenure">People got it right</span>
+                                                    </div>
+                                                </div>
+                                                <ul class="features">
+                                                    <li><i class="fa fa-quote-left"></i> <span
+                                                            class="question_easiest">...</span></li>
+                                                    <li><strong><span class="responsetime_easiest">0</span></strong>
+                                                        seconds on average to answer</li>
+                                                </ul>
+                                            </li>
+                                            <li class="price_block col-md-6 col-xs-11">
+                                                <h3>Toughest</h3>
+                                                <div class="price orange">
+                                                    <div class="price_figure">
+                                                        <span class="price_number usercount_toughest">0</span>
+                                                        <span class="price_tenure">People got it wrong</span>
+                                                    </div>
+                                                </div>
+                                                <ul class="features">
+                                                    <li><i class="fa fa-quote-left"></i> <span
+                                                            class="question_toughest">...</li>
+                                                    <li><strong><span class="responsetime_toughest">0</span></strong>
+                                                        seconds on average to answer</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 box-container ui-sortable">
+                                <!-- BOX -->
+                                <div class="box border purple" id="box_myhistory">
+                                    <div class="box-title">
+                                        <h4><i class="fa fa-signal"></i>Your History</h4>
+                                        <div class="tools">
+                                            <a class="collapse" href="javascript:;">
+                                                <i class="fa fa-chevron-up"></i>
+                                            </a>
+                                            <a class="remove" href="javascript:;">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="chart" id="chart_myhistory"
+                                            style="padding: 0px; position: relative;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script type="text/javascript" src="/javascripts/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.blockUI.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.flot.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.flot.time.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.flot.resize.min.js"></script>
+    <script type="text/javascript" src="/javascripts/xdate.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.animateNumber.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.gritter.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="/javascripts/script.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            App.setPage('widgets_box');
+            App.init();
+
+            $.getJSON('{{URL.QUIZ_STAT_AJAX}}?stat=basic', function (data) {
+                $.each(data, function (k, v) {
+                    $('#' + k).prop('number', 0).animateNumber({
+                        number: v
+                    });
+                });
+            });
+
+            $.getJSON('{{URL.QUIZ_STAT_AJAX}}?stat=easytough', function (data) {
+                $.each(data, function (k, v) {
+                    if (v.length > 0) {
+                        $('span.question_' + k).html(v[0][2]);
+                        $('span.usercount_' + k).html(v[0][0]).prop('number', 0).animateNumber({
+                            number: v[0][0]
+                        });
+                        $('span.responsetime_' + k).html(v[0][1].toFixed(2)).prop('number', 0)
+                            .animateNumber({
+                                number: v[0][1]
+                            });
+                    }
+                });
+            });
+
+            function showTooltip(x, y, contents, z) {
+                $('<div id="tooltip">' + contents + '</div>').css({
+                    position: 'absolute',
+                    display: 'none',
+                    top: y + 5,
+                    left: x + 15,
+                    border: '1px solid #333',
+                    padding: '4px',
+                    color: '#fff',
+                    'border-radius': '3px',
+                    'background-color': '#333',
+                    opacity: .8
+                }).appendTo('body').fadeIn(200);
+            }
+
+            function plotHistoryChart(scores, times, questions) {
+                var line_options = {
+                    show: !0,
+                    lineWidth: 2,
+                    fill: !0,
+                    fillColor: {
+                        colors: [{
+                            opacity: .05
+                        }, {
+                            opacity: .01
+                        }]
+                    }
+                };
+                var dataset = [{
+                        label: 'Total Questions',
+                        data: questions,
+                        color: '#70AFC4',
+                        bars: {
+                            show: !0,
+                            align: 'center',
+                            barWidth: 20,
+                            lineWidth: 15,
+                            /*fill: !0,*/
+                            fillColor: {
+                                colors: [{
+                                    opacity: .05
+                                }, {
+                                    opacity: .01
+                                }]
+                            }
+                        },
+                        points: {
+                            show: !0
+                        }
+                    },
+                    {
+                        label: 'Average Response Time',
+                        data: times,
+                        color: '#F0AD4E',
+                        lines: line_options,
+                        points: {
+                            show: !0
+                        }
+                    },
+                    {
+                        label: 'Total Points',
+                        data: scores,
+                        color: '#DB5E8C',
+                        lines: line_options,
+                        points: {
+                            show: !0
+                        }
+                    }
+                ];
+
+                var options = {
+                    xaxis: {
+                        mode: 'time',
+                        tickSize: [1, 'day'],
+                        axisLabelUseCanvas: !0,
+                        axisLabelFontSizePixels: 12,
+                        timezone: 'browser'
+                    },
+                    yaxis: {
+                        axisLabelUseCanvas: !0,
+                        axisLabelFontSizePixels: 12
+                    },
+                    series: {
+                        points: {
+                            show: !0
+                        },
+                        shadowSize: 2
+                    },
+                    grid: {
+                        hoverable: !0,
+                        clickable: !0,
+                        tickColor: '#eee',
+                        borderWidth: 0
+                    },
+                    legend: {
+                        show: 1
+                    }
+                };
+
+                $.plot($('#chart_myhistory'), dataset, options);
+                $('#chart_myhistory').bind('plothover', function (event, pos, item) {
+                    if (item) {
+                        if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
+                            previousPoint = item.dataIndex;
+                            previousLabel = item.series.label;
+                            $('#tooltip').remove();
+                            var x = new XDate(item.datapoint[0]).toString('MMM d'),
+                                y = item.datapoint[1];
+                            y = (y % 1 == 0) ? y : y.toFixed(2);
+                            showTooltip(item.pageX, item.pageY, '<b>' + item.series.label +
+                                '</b><br /> ' + y + ' on ' + x);
+                        }
+                    } else {
+                        $('#tooltip').remove();
+                        previousPoint = null;
+                    }
+                });
+            }
+
+            function getTop5Stats() {
+                var top5_periods = ['weekly', 'monthly', 'alltime'],
+                    badge_colors = ['red', 'blue', 'green', 'orange', ''],
+                    length = top5_periods.length,
+                    fetch_rank = true;
+                for (var i = 0; i < length; i++) {
+                    (function (i) {
+                        $.getJSON('{{URL.QUIZ_STAT_AJAX}}?stat=top5&period=' + top5_periods[i], function (
+                            data) {
+                            if (!data) return;
+                            var length = data.length,
+                                table_html = '';
+                            for (var j = 0; j < length; j++) {
+                                table_html += '<tr><td><span class="badge badge-' + badge_colors[
+                                        j] + '">' + (j + 1) + '</span></td><td>' + data[j][1] +
+                                    '</td><td>' + data[j][0] + '</td><td>' + data[j][2] + '</tr>';
+                                if (data[j][1] == "{{ USERNAME }}") {
+                                    notify(top5_periods[i]);
+                                    if (top5_periods[i] == 'alltime') {
+                                        fetch_rank = false;
+                                        $('div#overall_rank').html(data[j][3]).prop('number', 0)
+                                            .animateNumber({
+                                                number: j + 1
+                                            });
+                                    }
+                                }
+                            }
+                            document.getElementById('tbody_top5_' + top5_periods[i]).innerHTML =
+                                table_html;
+                        }).always(function () {
+                            if (fetch_rank && top5_periods[i] == 'alltime') {
+                                getRank();
+                            }
+                        });
+                    })(i);
+                }
+            }
+
+            function getRank() {
+                $.getJSON('{{URL.QUIZ_STAT_AJAX}}?stat=myrank', function (data) {
+                    $('div#overall_rank').html(data).prop('number', 0).animateNumber({
+                        number: data
+                    });
+                });
+            }
+
+            function getMyHistory() {
+                $.getJSON('{{URL.QUIZ_STAT_AJAX}}?stat=myhistory', function (data) {
+                    if (data != null) {
+                        plotHistoryChart(data['scores'], data['times'], data['questions']);
+                    }
+                });
+            }
+
+            function notify(time_period) {
+                $.gritter.add({
+                    title: 'Congratulations!',
+                    text: 'You just made it to the ' + time_period + ' top 5!',
+                    image: '/images/gritter-congrats.png',
+                    sticky: false,
+                    class_name: 'my-sticky-class',
+                    time: ''
+                });
+            }
+
+            var ajax_box1 = $('#box_top5');
+            App.blockUI(ajax_box1), getTop5Stats();
+
+            var ajax_box2 = $('#box_myhistory');
+            App.blockUI(ajax_box2), getMyHistory();
+
+            $(document).ajaxStop(function () {
+                App.unblockUI(ajax_box1);
+                App.unblockUI(ajax_box2);
+            });
+        });
+    </script>
+</body>
+
+</html>

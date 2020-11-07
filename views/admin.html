@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <title>{{ APP_TITLE }} | Quiz Administration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <meta name="description" content="{{ APP_TITLE }} - Quiz Administration" />
+    <meta name="author" content="GP" />
+    <!-- IE PINNED SITE SUPPORT -->
+    <meta name="msapplication-tooltip" content="{{ APP_TITLE }} - The most amazeballs quizzing app ever!" />
+    <meta name="msapplication-starturl" content="{{ IE_START_URL }}" />
+    <meta name="msapplication-task"
+        content="name={{ APP_TITLE }}; action-uri={{ IE_START_URL}}; icon-uri={{ IE_FAVICON_URL }}" />
+    <meta name="msapplication-task" content="name=FAQ; action-uri={{ IE_FAQ_URL}}; icon-uri={{ IE_FAVICON_URL }}" />
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
+    <link rel="stylesheet" type="text/css" href="/font-awesome/css/font-awesome.min.css" />
+
+    <style type="text/css"></style>
+</head>
+
+<body style="">
+    <header class="navbar clearfix" id="header">
+        <div class="container">
+            <div class="navbar-brand mini-menu">
+                <!-- LOGO -->
+                <a href="{{ URL.MAIN }}">
+                    <img src="" alt="Quiz Logo" class="img-responsive" height="30" width="120">
+                </a>
+                <div class="sidebar-collapse btn" id="sidebar-collapse">
+                    <i data-icon2="fa fa-bars" data-icon1="fa fa-bars" class="fa fa-bars"></i>
+                </div>
+            </div>
+            <ul class="nav navbar-nav pull-right">
+                <li class="dropdown" id="header-user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="username"><i class="fa fa-user-md"></i>&nbsp;{{ USERNAME }}&nbsp;</span>
+                        <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ URL.LOGOUT }}"><i class="fa fa-power-off"></i> Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <section id="page">
+        <!-- SIDEBAR -->
+        <div class="sidebar mini-menu" id="sidebar" style="">
+            <div class="sidebar-menu nav-collapse">
+                <div class="divide-20"></div>
+                <ul>
+                    <li class="active">
+                        <a href="{{ URL.QUIZ_ADMIN }}">
+                            <i class="fa fa-list fa-fw"></i> <span class="menu-text">Quiz</span>
+                        </a>
+                    </li>
+                    <li class="has-sub">
+                        <a class="" href="javascript:;">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">Data</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li>
+                                <a href="{{ URL.QUIZ_ADMIN_ARCHIVE }}">
+                                    <span class="sub-menu-text">Archive</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ URL.QUIZ_ADMIN_DATA }}">
+                                    <span class="sub-menu-text">User Data</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ URL.QUIZ_ADMIN_FEEDBACK }}">
+                                    <span class="sub-menu-text">Feedback{% if FEEDBACK_UNREAD > 0%}<span
+                                            class="badge pull-right"
+                                            style="margin-right: 10px; background-color: #DD5A43;">{{ FEEDBACK_UNREAD }}</span>{% endif %}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="main-content" class="margin-left-50">
+            <div class="container">
+                <div class="row">
+                    <div id="content" class="col-lg-12" style="min-height:1063px !important">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="page-header">
+                                    <ul class="breadcrumb">
+                                        <li>
+                                            <i class="fa fa-home"></i>
+                                        </li>
+                                        <li>Administration</li>
+                                    </ul>
+                                    <div class="clearfix">
+                                        <h3 class="content-title pull-left">Time for a Quiz</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-info tip-right btn-add"><i class="fa fa-plus"></i>
+                                    Add Question</button>
+                            </div>
+                        </div>
+                        <div class="separator"></div>
+                        <div class="row">
+                            <div class="hidden">
+                                <div class="col-md-6 box-container box-question" id="dummy-box">
+                                    <div class="box border purple">
+                                        <div class="box-title">
+                                            <h4><i class="fa fa-bars"></i>Question #<span
+                                                    class="question-number"></span>&nbsp;</h4>
+                                            <span class="label label-right label-warning question-status">Not
+                                                Saved</span>
+                                            <div class="tools">
+                                                <a class="add" href="javascript:;">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                                <a class="collapse" href="javascript:;">
+                                                    <i class="fa fa-chevron-up"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="box-body">
+                                            <form role="form" class="form-horizontal form-question"
+                                                name="form-question-0" action="{{ URL.QUIZ_ADMIN_SAVE_AJAX }}"
+                                                method="POST">
+                                                <input type="hidden" name="question_id-0" id="question_id">
+                                                <input type="hidden" name="image-0" id="image">
+                                                <input type="hidden" name="image_size-0" id="size">
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">Question</label>
+                                                    <div class="col-sm-9">
+                                                        <textarea rows="3" class="form-control q-title" name="title-0"
+                                                            maxlength="500" required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">Choice 1</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">
+                                                                <input type="radio" class="q-radio" name="answer-0"
+                                                                    value="1" required>
+                                                            </span>
+                                                            <input type="text"
+                                                                class="form-control choices q-choice-mandatory"
+                                                                name="choice1-0" maxlength="100" required>
+                                                            <span class="input-group-addon">*</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">Choice 2</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">
+                                                                <input type="radio" class="q-radio" name="answer-0"
+                                                                    value="2">
+                                                            </span>
+                                                            <input type="text"
+                                                                class="form-control choices q-choice-mandatory"
+                                                                name="choice2-0" maxlength="100" required>
+                                                            <span class="input-group-addon">*</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">Choice 3</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">
+                                                                <input type="radio" class="q-radio" name="answer-0"
+                                                                    value="3">
+                                                            </span>
+                                                            <input type="text"
+                                                                class="form-control choices q-choice-mandatory"
+                                                                name="choice3-0" maxlength="100" required>
+                                                            <span class="input-group-addon">*</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">Choice 4</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">
+                                                                <input type="radio" class="q-radio" name="answer-0"
+                                                                    value="4">
+                                                            </span>
+                                                            <input type="text"
+                                                                class="form-control choices q-choice-optional"
+                                                                name="choice4-0" maxlength="100">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">Choice 5</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">
+                                                                <input type="radio" class="q-radio" name="answer-0"
+                                                                    value="5">
+                                                            </span>
+                                                            <input type="text"
+                                                                class="form-control choices q-choice-optional"
+                                                                name="choice5-0" maxlength="100">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">Allowed time (in
+                                                        seconds)</label>
+                                                    <div class="col-sm-9 input-group">
+                                                        <span class="input-group-btn">
+                                                            <button data-field="allowed_time-0" data-type="minus"
+                                                                class="btn btn-grey btn-number" type="button"
+                                                                name="allowed_time-0">
+                                                                <span class="glyphicon glyphicon-minus"></span>
+                                                            </button>
+                                                        </span>
+                                                        <input type="text" max="25" min="10" value="10"
+                                                            class="form-control input-number" name="allowed_time-0"
+                                                            required>
+                                                        <span class="input-group-btn">
+                                                            <button data-field="allowed_time-0" data-type="plus"
+                                                                class="btn btn-grey btn-number" type="button"
+                                                                name="allowed_time-0">
+                                                                <span class="glyphicon glyphicon-plus"></span>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-offset-3 col-sm-10">
+                                                        <button type="button" class="btn btn-primary btn-save"
+                                                            data-loading-text="Saving.."><i class="fa fa-floppy-o"></i>
+                                                            Save</button>
+                                                        <button type="button" class="btn btn-danger btn-delete hidden"
+                                                            data-loading-text="Delete.."><i
+                                                                class="fa fa-times-circle"></i> Delete</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if questions.length >= 1 %}
+                            {% for question in questions %}
+                            <div class="col-md-6 box-container ui-sortable box-question">
+                                <div class="box border purple">
+                                    <div class="box-title">
+                                        <h4><i class="fa fa-bars"></i>Question #<span
+                                                class="question-number">{{ loop.index }}</span>&nbsp;</h4>
+                                        <span class="label label-right label-success question-status">Saved</span>
+                                        <div class="tools">
+                                            <a class="add" href="javascript:;">
+                                                <i class="fa fa-plus"></i>
+                                            </a>
+                                            <a class="collapse" href="javascript:;">
+                                                <i class="fa fa-chevron-up"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <form role="form" class="form-horizontal form-question"
+                                            name="form-question-{{ loop.index0 }}"
+                                            action="{{ URL.QUIZ_ADMIN_SAVE_AJAX }}" method="POST">
+                                            <input type="hidden" name="question_id-{{ loop.index0 }}" id="question_id"
+                                                value="{{ question._id }}">
+                                            <input type="hidden" name="image-{{ loop.index0 }}" id="image"
+                                                value="{{ question.image }}">
+                                            <input type="hidden" name="image_size-{{ loop.index0 }}" id="image_size"
+                                                value="{{ question.image_size }}">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Question</label>
+                                                <div class="col-sm-9">
+                                                    <textarea rows="3" class="form-control q-title"
+                                                        name="title-{{ loop.index0 }}" maxlength="500"
+                                                        required>{{ question.title }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 1</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio"
+                                                                name="answer-{{ loop.index0 }}" value="1" required
+                                                                {% if question.answer == 1 %}checked{% endif %}>
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-mandatory"
+                                                            name="choice1-{{ loop.index0 }}" maxlength="100"
+                                                            value="{{ question.choices['1'].choice_text }}" required>
+                                                        <span class="input-group-addon">*</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 2</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio"
+                                                                name="answer-{{ loop.index0 }}" value="2"
+                                                                {% if question.answer == 2 %}checked{% endif %}>
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-mandatory"
+                                                            name="choice2-{{ loop.index0 }}" maxlength="100"
+                                                            value="{{ question.choices['2'].choice_text }}" required>
+                                                        <span class="input-group-addon">*</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 3</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio"
+                                                                name="answer-{{ loop.index0 }}" value="3"
+                                                                {% if question.answer == 3 %}checked{% endif %}>
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-mandatory"
+                                                            name="choice3-{{ loop.index0 }}" maxlength="100"
+                                                            value="{{ question.choices['3'].choice_text }}" required>
+                                                        <span class="input-group-addon">*</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 4</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio"
+                                                                name="answer-{{ loop.index0 }}" value="4"
+                                                                {% if question.answer == 4 %}checked{% endif %}>
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-optional"
+                                                            name="choice4-{{ loop.index0 }}" maxlength="100"
+                                                            {% if question.choices['4'] %}value="{{ question.choices['4'].choice_text }}"
+                                                            {% endif %}>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 5</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio"
+                                                                name="answer-{{ loop.index0 }}" value="5"
+                                                                {% if question.answer == 5 %}checked{% endif %}>
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-optional"
+                                                            name="choice5-{{ loop.index0 }}" maxlength="100"
+                                                            {% if question.choices['5'] %}value="{{ question.choices['5'].choice_text }}"
+                                                            {% endif %}>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-3 col-sm-10">
+                                                    <button type="button" class="btn btn-primary btn-save"
+                                                        data-loading-text="Saving.."><i class="fa fa-floppy-o"></i>
+                                                        Save</button>
+                                                    <button type="button" class="btn btn-danger btn-delete"
+                                                        data-loading-text="Delete.."><i class="fa fa-times-circle"></i>
+                                                        Delete</button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <div class="col-md-6 box-container box-question">
+                                <div class="box border purple">
+                                    <div class="box-title">
+                                        <h4><i class="fa fa-bars"></i>Question #<span
+                                                class="question-number">1</span>&nbsp;</h4>
+                                        <span class="label label-right label-warning question-status">Not Saved</span>
+                                        <div class="tools">
+                                            <a class="add" href="javascript:;">
+                                                <i class="fa fa-plus"></i>
+                                            </a>
+                                            <a class="collapse" href="javascript:;">
+                                                <i class="fa fa-chevron-up"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <form role="form" class="form-horizontal form-question" name="form-question-0"
+                                            action="{{ URL.QUIZ_ADMIN_SAVE_AJAX }}" method="POST">
+                                            <input type="hidden" name="question_id-0" id="question_id">
+                                            <input type="hidden" name="image-0" id="image">
+                                            <input type="hidden" name="image_size-0" id="image_size">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Question</label>
+                                                <div class="col-sm-9">
+                                                    <textarea rows="3" class="form-control q-title" name="title-0"
+                                                        maxlength="500" required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 1</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio" name="answer-0"
+                                                                value="1" required>
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-mandatory"
+                                                            name="choice1-0" maxlength="100" required>
+                                                        <span class="input-group-addon">*</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 2</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio" name="answer-0"
+                                                                value="2">
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-mandatory"
+                                                            name="choice2-0" maxlength="100" required>
+                                                        <span class="input-group-addon">*</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 3</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio" name="answer-0"
+                                                                value="3">
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-mandatory"
+                                                            name="choice3-0" maxlength="100" required>
+                                                        <span class="input-group-addon">*</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 4</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio" name="answer-0"
+                                                                value="4">
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-optional"
+                                                            name="choice4-0" maxlength="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Choice 5</label>
+                                                <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="radio" class="q-radio" name="answer-0"
+                                                                value="5">
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control choices q-choice-optional"
+                                                            name="choice5-0" maxlength="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="footer-tools">
+                            <span class="go-top">
+                                <i class="fa fa-chevron-up"></i> Top
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="text/javascript" src="/javascripts/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/bootbox.min.js"></script>
+    <script type="text/javascript" src="/javascripts/dropzone.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="/javascripts/script.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            App.setPage('widgets_box');
+            App.init();
+
+            $.validator.addMethod('notEqualToGroup', function (value, element, options) {
+                var elems = $(element).parents('form').find(options[0]);
+                var valueToCompare = value;
+                var matchesFound = 0;
+                $.each(elems, function () {
+                    thisVal = $(this).val();
+                    if (thisVal == valueToCompare) {
+                        matchesFound++;
+                    }
+                });
+                if (this.optional(element) || matchesFound <= 1) {
+                    return true;
+                }
+            }, $.validator.format('Please enter a unique value.'));
+
+            //Validations
+            $.validator.setDefaults({
+                errorElement: 'span',
+                errorClass: 'help-block',
+                errorPlacement: function (error, element) {
+                    if (element.is(':radio')) {
+                        error.insertBefore(element.parents('form').find('button.btn-save'));
+                        element.parents('div.form-group').addClass('has-error');
+                    }
+                },
+                highlight: function (element, errorClass) {
+                    $(element).parents('div.form-group').addClass('has-error');
+                },
+                unhighlight: function (element, errorClass) {
+                    $(element).parents('div.form-group').removeClass('has-error');
+                    $(element).next('span.help-block').remove();
+                }
+            });
+
+            $('form[name="form-question-0"]:visible').validate({
+                rules: {
+                    'title-0': {
+                        required: true
+                    },
+                    'answer-0': {
+                        required: true
+                    },
+                    'choice1-0': {
+                        required: true,
+                        notEqualToGroup: ['.choices']
+                    },
+                    'choice2-0': {
+                        required: true,
+                        notEqualToGroup: ['.choices']
+                    },
+                    'choice3-0': {
+                        required: true,
+                        notEqualToGroup: ['.choices']
+                    },
+                    'choice4-0': {
+                        notEqualToGroup: ['.choices']
+                    },
+                    'choice5-0': {
+                        notEqualToGroup: ['.choices']
+                    },
+                    'allowed_time-0': {
+                        required: true,
+                        digits: true,
+                        min: 10,
+                        max: 25
+                    }
+                },
+                messages: {
+                    'answer-0': 'Please select an answer by selecting one of the round buttons.'
+                }
+            });
+
+            $('button.btn-save').on('click', function () {
+                var form = $(this).closest('form');
+                if (form.valid()) {
+                    $.post(form.attr('action'), form.serialize(), function (response) {
+                        if (response['error'] == false) {
+                            form.parents('.box-question').find('span.question-status').addClass(
+                                'label-success').removeClass('label-warning').html('Saved');
+                            form.find('input#question_id').val(response['question_id']);
+                            form.find('button.btn-delete').removeClass('hidden');
+                        }
+                    });
+                }
+            });
+
+            $('button.btn-add').on('click', function () {
+                var question_block = $('div#dummy-box').clone(true),
+                    index = parseInt($('.box-question:visible').last().find('form.form-question').attr(
+                        'name').replace(/^\D+/g, '')) + 1,
+                    q_form = question_block.find('form').first();
+                question_block.removeAttr('id');
+                question_block.find('textarea, input:not([type=radio],.input-number)').val('');
+                question_block.find('input[type=radio]').removeAttr('checked');
+                q_form.attr('name', q_form.attr('name').substring(0, q_form.attr('name').lastIndexOf(
+                    '-') + 1) + index).validate();
+                $.each(question_block.find('input, textarea, button.btn-number'), function (counter,
+                    element) {
+                    var curr_name = element.getAttribute('name'),
+                        new_name = curr_name.substring(0, curr_name.lastIndexOf('-') + 1) +
+                        index;
+                    element.setAttribute('name', new_name);
+                    if (element.hasAttribute('data-field')) {
+                        element.setAttribute('data-field', new_name);
+                    };
+                    if (element.hasAttribute('required')) {
+                        $(element).rules('add', {
+                            required: true
+                        });
+                    };
+                    if (element.tagName.toLowerCase() == 'input') {
+                        $(element).rules('add', {
+                            notEqualToGroup: ['.choices']
+                        });
+                    };
+                });
+                question_block.find('input[type=radio]').first().rules('add', {
+                    messages: 'Please select an answer by selecting one of the round buttons.'
+                });
+                question_block.find('span.question-status').removeClass('label-success').addClass(
+                    'label-warning').html('Not Saved');
+                question_block.find('span.question-number').html($('.box-question:visible').length + 1);
+                question_block.find('form.dropzone').remove();
+                $('body div#dummy-dropzone').clone(true).removeClass('hidden').children().first().attr(
+                    'id', 'my-awesome-dropzone-' + index).attr('name', 'my-awesome-dropzone-' +
+                    index).dropzone(dropzone_settings).insertAfter(question_block.find(
+                    'form.form-question'));
+                question_block.insertAfter($('.box-question').last());
+                question_block.find('textarea').focus();
+                $('html, body').animate({
+                    scrollTop: question_block.offset().top
+                }, 500);
+            });
+
+            $('a.add').on('click', function () {
+                $('button.btn-add').last().click();
+            });
+
+            $('button.btn-delete').on('click', function () {
+                var btn = $(this);
+                if ($('div.box-question:visible').length <= 1) {
+                    bootbox.alert('You cannot delete the only remaining question bro!');
+                } else {
+                    var form = $(this).closest('form').first();
+                    $.ajax({
+                        type: 'DELETE',
+                        url: form.attr('action'),
+                        data: {
+                            question_id: form.find('input#question_id').val()
+                        },
+                        success: function () {
+                            btn.parents('div.box-question').remove();
+                        },
+                        error: function (jqHxr, status, error) {
+                            console.error(status, error);
+                        }
+                    });
+                }
+            });
+
+            $('form :input').change(function () {
+                var e = $(this);
+                e.parents('.box').find('span.question-status').removeClass('label-success').addClass(
+                    'label-warning').html('Not Saved');
+            });
+
+            //+/-
+            $('.btn-number').on('click', function (e) {
+                e.preventDefault();
+                fieldName = $(this).attr('data-field');
+                type = $(this).attr('data-type');
+                var input = $("input[name='" + fieldName + "']:visible");
+                var currentVal = parseInt(input.val());
+                if (!isNaN(currentVal)) {
+                    if (type == 'minus') {
+                        if (currentVal > input.attr('min')) {
+                            input.val(currentVal - 1).change();
+                        }
+                        if (parseInt(input.val()) == input.attr('min')) {
+                            $(this).attr('disabled', true);
+                        }
+                    } else if (type == 'plus') {
+                        if (currentVal < input.attr('max')) {
+                            input.val(currentVal + 1).change();
+                        }
+                        if (parseInt(input.val()) == input.attr('max')) {
+                            $(this).attr('disabled', true);
+                        }
+                    }
+                } else {
+                    input.val(input.attr('min'));
+                }
+            });
+
+            $('.input-number').on('focusin', function () {
+                $(this).data('oldValue', $(this).val());
+            });
+
+            $('.input-number').on('change', function () {
+                minValue = parseInt($(this).attr('min'));
+                maxValue = parseInt($(this).attr('max'));
+                valueCurrent = parseInt($(this).val());
+                name = $(this).attr('name');
+                if (valueCurrent >= minValue) {
+                    $(".btn-number[data-type='minus'][data-field='" + name + "']").removeAttr(
+                        'disabled')
+                } else {
+                    $(this).val($(this).data('oldValue'));
+                }
+                if (valueCurrent <= maxValue) {
+                    $(".btn-number[data-type='plus'][data-field='" + name + "']").removeAttr('disabled')
+                } else {
+                    $(this).val($(this).data('oldValue'));
+                }
+            });
+
+            $('.input-number').on('keydown', function (e) {
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    return;
+                }
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode >
+                        105)) {
+                    e.preventDefault();
+                }
+            });
+
+            var dropzone_settings = {
+                method: 'post',
+                maxFilesize: .6,
+                maxFiles: 1,
+                acceptedFiles: 'image/*',
+                addRemoveLinks: !0,
+                dictResponseError: 'Error while uploading file!',
+                previewTemplate: '<div class="dz-preview dz-file-preview"><div class="dz-details"><div class="dz-filename"><span data-dz-name></span></div><div class="dz-size" data-dz-size></div><img data-dz-thumbnail /></div><div class="progress progress-sm progress-striped active"><div class="progress-bar progress-bar-success" data-dz-uploadprogress></div></div><div class="dz-success-mark"><span></span></div><div class="dz-error-mark"><span></span></div><div class="dz-error-message"><span data-dz-errormessage></span></div></div>',
+                init: function () {
+                    this.on('addedfile', function (file) {
+                        $(this.element).parents('.box').find('span.question-status')
+                            .removeClass('label-success').addClass('label-warning').html(
+                                'Not Saved');
+                    });
+                    this.on('success', function (file, response) {
+                        if (response['error'] === false) {
+                            file['serverPath'] = response['file_path'];
+                            $(this.element).prev().find('input#image').val(response[
+                                'file_path']);
+                            $(this.element).prev().find('input#image_size').val(response[
+                                'image_size']);
+                        }
+                    });
+                    this.on('removedfile', function (file, response) {
+                        var e = $(this.element);
+                        var image = file['serverPath'] || e.prev().find('input#image').val();
+                        if (image) {
+                            $.ajax({
+                                type: 'DELETE',
+                                url: '{{URL.QUIZ_ADMIN_SAVE_UPLOAD}}',
+                                data: {
+                                    file_name: image
+                                },
+                                success: function () {
+                                    e.prev().find('input#image').val('');
+                                    e.prev().find('input#image_size').val('0');
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+
+        });
+    </script>
+</body>
+
+</html>
